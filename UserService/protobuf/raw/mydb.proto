@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "protobuf/compiled";
+
+import "google/protobuf/empty.proto";
+import "protobuf/raw/main.proto";
+
+service DBService {
+  rpc GetUserById (User) returns (User) {}
+  rpc GetUserList (google.protobuf.Empty) returns(UserList) {}
+  rpc CreateUser (User) returns (User) {}
+  rpc UpdateUser (User) returns (User) {}
+  rpc DeleteUser (User) returns (User) {}
+}

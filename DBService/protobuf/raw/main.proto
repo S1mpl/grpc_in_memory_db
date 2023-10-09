@@ -3,7 +3,6 @@ syntax = "proto3";
 option go_package = "protobuf/compiled";
 
 import "google/protobuf/empty.proto";
-import "validate/validate.proto";
 
 service UserService {
   rpc GetUserById (User) returns (User) {}
@@ -17,10 +16,10 @@ service AdminUserService {
 }
 
 message User {
-  optional string id = 1  [(validate.rules).string.uuid = true];
-  optional string email = 2 [(validate.rules).string.email = true];
-  optional string username = 3 [(validate.rules).string.min_len = 3, (validate.rules).string.max_len = 255];
-  optional string password = 4 [(validate.rules).string.min_len = 6, (validate.rules).string.max_len = 255];
+  optional string id = 1 ;
+  optional string email = 2;
+  optional string username = 3;
+  optional string password = 4;
   optional bool admin = 5;
 }
 
@@ -29,7 +28,7 @@ message UserList {
 }
 
 message Status {
-  int32 code = 1 [(validate.rules).int32.lte = 999];
+  int32 code = 1;
   string message = 2;
   bool error = 3;
 }

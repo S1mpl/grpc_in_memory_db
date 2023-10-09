@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/grpc_in_memory/UserService/config"
-	protobuf "github.com/grpc_in_memory/UserService/protobuf/compiled"
-	"github.com/grpc_in_memory/UserService/server"
+	"github.com/grpc_in_memory/DBService/config"
+	protobuf "github.com/grpc_in_memory/DBService/protobuf/compiled"
+	"github.com/grpc_in_memory/DBService/server"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
@@ -28,12 +28,7 @@ func main() {
 
 	userService := server.NewUserService()
 
-	opts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(userService.ValidateInterceptor),
-		grpc.UnaryInterceptor(userService.BasicAuthInterceptor),
-	}
-
-	grpcServer := grpc.NewServer(opts...)
+	grpcServer := grpc.NewServer()
 	protobuf.RegisterUserServiceServer(grpcServer, userService)
 
 	if err := grpcServer.Serve(lis); err != nil {

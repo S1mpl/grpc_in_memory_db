@@ -3,29 +3,26 @@ package server
 import (
 	"context"
 	protobuf "github.com/grpc_in_memory/UserService/protobuf/compiled"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (u *UserService) GetUserById(context.Context, *protobuf.User) (*protobuf.User, error) {
+func (u *UserService) GetUserById(ctx context.Context, user *protobuf.User) (*protobuf.User, error) {
 
-	return nil, nil
+	user, err := u.userUC.GetUserById(user)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+	}
+
+	return user, nil
 }
 
 func (u *UserService) GetUserList(context.Context, *emptypb.Empty) (*protobuf.UserList, error) {
 
-	return nil, nil
-}
-
-func (u *UserService) CreateUser(context.Context, *protobuf.User) (*protobuf.Response, error) {
-
-	return nil, nil
-}
-
-func (u *UserService) UpdateUser(context.Context, *protobuf.User) (*protobuf.Response, error) {
-
-	return nil, nil
-}
-func (u *UserService) DeleteUser(context.Context, *protobuf.User) (*protobuf.Response, error) {
-
-	return nil, nil
+	userList, err := u.userUC.GetUserList()
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+	}
+	return userList, nil
 }

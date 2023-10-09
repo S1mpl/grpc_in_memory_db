@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option go_package = "protobuf/compiled";
+
+service DatabaseService {
+  rpc GetByKey (GetByKeyRequest) returns (Row) {}
+  rpc GetAll (GetAllRequest) returns (AllRows) {}
+  rpc Insert (Row) returns (Response) {}
+  rpc Update (Row) returns (Response) {}
+  rpc DeleteByKey (DeleteByKeyRequest) returns (Response) {}
+}
+
+message AllRows {
+  repeated Row rows = 1;
+}
+
+message Row {
+  string key = 1;
+  map<string, Value> data = 2;
+}
+
+message Value {
+  string value = 1;
+  bool unique = 2;
+}
+
+message GetByKeyRequest {
+  string key = 1;
+}
+
+message GetAllRequest {
+  string table = 1;
+}
+
+message Response {
+  bool success = 1;
+}
+
+message DeleteByKeyRequest {
+  string key = 1;
+}

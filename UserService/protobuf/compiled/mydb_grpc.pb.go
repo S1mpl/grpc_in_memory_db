@@ -20,11 +20,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DBService_GetUserById_FullMethodName = "/DBService/GetUserById"
-	DBService_GetUserList_FullMethodName = "/DBService/GetUserList"
-	DBService_CreateUser_FullMethodName  = "/DBService/CreateUser"
-	DBService_UpdateUser_FullMethodName  = "/DBService/UpdateUser"
-	DBService_DeleteUser_FullMethodName  = "/DBService/DeleteUser"
+	DBService_GetUserById_FullMethodName    = "/DBService/GetUserById"
+	DBService_GetUserList_FullMethodName    = "/DBService/GetUserList"
+	DBService_CreateUser_FullMethodName     = "/DBService/CreateUser"
+	DBService_UpdateUser_FullMethodName     = "/DBService/UpdateUser"
+	DBService_DeleteUser_FullMethodName     = "/DBService/DeleteUser"
+	DBService_CheckUserExist_FullMethodName = "/DBService/CheckUserExist"
 )
 
 // DBServiceClient is the client API for DBService service.
@@ -36,6 +37,7 @@ type DBServiceClient interface {
 	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	DeleteUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	CheckUserExist(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 }
 
 type dBServiceClient struct {
@@ -91,6 +93,15 @@ func (c *dBServiceClient) DeleteUser(ctx context.Context, in *User, opts ...grpc
 	return out, nil
 }
 
+func (c *dBServiceClient) CheckUserExist(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, DBService_CheckUserExist_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBServiceServer is the server API for DBService service.
 // All implementations must embed UnimplementedDBServiceServer
 // for forward compatibility
@@ -100,6 +111,7 @@ type DBServiceServer interface {
 	CreateUser(context.Context, *User) (*User, error)
 	UpdateUser(context.Context, *User) (*User, error)
 	DeleteUser(context.Context, *User) (*User, error)
+	CheckUserExist(context.Context, *User) (*User, error)
 	mustEmbedUnimplementedDBServiceServer()
 }
 
@@ -121,6 +133,9 @@ func (UnimplementedDBServiceServer) UpdateUser(context.Context, *User) (*User, e
 }
 func (UnimplementedDBServiceServer) DeleteUser(context.Context, *User) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedDBServiceServer) CheckUserExist(context.Context, *User) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUserExist not implemented")
 }
 func (UnimplementedDBServiceServer) mustEmbedUnimplementedDBServiceServer() {}
 
@@ -225,6 +240,24 @@ func _DBService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBService_CheckUserExist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBServiceServer).CheckUserExist(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBService_CheckUserExist_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBServiceServer).CheckUserExist(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBService_ServiceDesc is the grpc.ServiceDesc for DBService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -251,6 +284,10 @@ var DBService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUser",
 			Handler:    _DBService_DeleteUser_Handler,
+		},
+		{
+			MethodName: "CheckUserExist",
+			Handler:    _DBService_CheckUserExist_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

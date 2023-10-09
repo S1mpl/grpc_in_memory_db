@@ -45,10 +45,10 @@ func (u *UserService) BasicAuthInterceptor(ctx context.Context, req interface{},
 
 	if strings.HasPrefix(info.FullMethod, "/proto.Admin/") {
 		if err != nil {
-			return nil, status.Error(codes.Unauthenticated, "Неверные учетные данные")
+			return nil, status.Error(codes.Unauthenticated, "incorrect login or password")
 		}
 		if !*user.Admin {
-			return nil, status.Error(codes.PermissionDenied, "Требуются админские права")
+			return nil, status.Error(codes.PermissionDenied, "You are not admin")
 		}
 	}
 	return handler(ctx, req)

@@ -29,8 +29,7 @@ func main() {
 	userService := server.NewUserService()
 
 	opts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(userService.ValidateInterceptor),
-		grpc.UnaryInterceptor(userService.BasicAuthInterceptor),
+		grpc.ChainUnaryInterceptor(grpc.UnaryServerInterceptor(userService.ValidateInterceptor), grpc.UnaryServerInterceptor(userService.ValidateInterceptor)),
 	}
 
 	grpcServer := grpc.NewServer(opts...)
